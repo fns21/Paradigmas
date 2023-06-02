@@ -24,7 +24,6 @@ public class Jogador extends Peca {
         jogadores[1] = new Jogador(4, 8, "J2");
         jogadores[2] = new Jogador(8, 4, "J3");
         jogadores[3] = new Jogador(4, 0, "J4"); 
-
     }
 
     public int moveCima(){

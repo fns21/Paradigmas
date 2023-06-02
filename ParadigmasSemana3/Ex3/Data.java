@@ -58,7 +58,7 @@ public class Data {
             this.ano = ano;
     }
 
-    //Outros Métodos
+    //Outros Métodos  ~
     public boolean anterior(Data data){
         if(data.ano > getAno() || (data.ano == getAno() && data.mes > getMes()) || (data.ano == getAno() && data.mes == getMes() && data.dia > getDia()))
             return true;
