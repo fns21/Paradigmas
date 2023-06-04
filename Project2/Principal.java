@@ -7,7 +7,10 @@ public class Principal {
         Tabuleiro tabuleiro = new Tabuleiro(casa);
         
         terminal.menuInicializacao();
-        jogo.inicializaJogo(terminal, casa);
+        jogo.inicializaJogador(terminal, casa);
+        jogo.inicializaFakeNews(casa);
+        jogo.inicializaSetor(casa);
+        jogo.inicializaItem(casa);
         terminal.inicializaTabuleiro(tabuleiro, casa);
     }
 }

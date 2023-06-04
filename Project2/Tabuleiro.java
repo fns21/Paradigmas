@@ -22,6 +22,15 @@ public class Tabuleiro {
                 if(casa[i][j].getJogador() != null){
                     System.out.print(Cores.ANSI_GREEN + casa[i][j].getJogador().getNome() +" "+ Cores.ANSI_RESET);
                 }
+                else if(casa[i][j].getFakeNews() != null){
+                    System.out.print(Cores.ANSI_RED + casa[i][j].getFakeNews().getNome() +" "+ Cores.ANSI_RESET);
+                }                
+                else if(casa[i][j].getRestrito() != false){
+                    System.out.print(Cores.ANSI_WHITE + "XX" +" "+ Cores.ANSI_RESET);
+                }
+                else if(casa[i][j].getItem() != null){
+                    System.out.print(Cores.ANSI_YELLOW + "??" +" "+ Cores.ANSI_RESET);
+                }
                 else{
                     System.out.print(Cores.ANSI_WHITE + "   " + Cores.ANSI_RESET);
                 }

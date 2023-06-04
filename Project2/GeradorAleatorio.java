@@ -6,9 +6,7 @@ public class GeradorAleatorio {
     int aleatorio;
 
     //Construtor
-    public GeradorAleatorio(){
-        this.setAleatorio(0);
-    }
+    public GeradorAleatorio(){}
     
     //Métodos get/set
     public int getAleatorio(){

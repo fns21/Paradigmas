@@ -19,9 +19,6 @@ public class InterfaceTerminal {
     public void setNumJogadores(int numJogadores){
         if(numJogadores > 0 && numJogadores <= 4)
             this.numJogadores = numJogadores;
-        else{
-            System.out.println("Entrada Inválida");
-        }
     }
 
     //Outros métodos
