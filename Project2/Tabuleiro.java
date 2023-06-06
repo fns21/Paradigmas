@@ -14,7 +14,6 @@ public class Tabuleiro {
 
     //Outros métodos
     public void desenhaTabuleiro(Setor casa[][]){
-
         for(int i = 0; i < TAM; i++){
             System.out.println(Cores.ANSI_WHITE + "+----+----+----+----+----+----+----+----+----+" + Cores.ANSI_RESET);
             for(int j = 0; j < TAM; j++){

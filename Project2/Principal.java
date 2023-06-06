@@ -11,6 +11,7 @@ public class Principal {
         jogo.inicializaFakeNews(casa);
         jogo.inicializaSetor(casa);
         jogo.inicializaItem(casa);
-        terminal.inicializaTabuleiro(tabuleiro, casa);
+        tabuleiro.desenhaTabuleiro(casa);
+        jogo.atualizaFakeNews(tabuleiro, casa);
     }
 }

@@ -1,84 +1,91 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Jogo {
-    
-    //Atributos
-    private Jogador jogador[];
-    private FakeNews fn[] = new FakeNews[6];
-    private Item item[] = new Item[2];
-    private Posicao J[] = new Posicao[4];
+    // Atributos
+    private List<Jogador> jogadores;
+    private List<FakeNews> fakeNewsList;
+    private List<Item> itemList;
+    private Posicao[] posicoes;
 
-    //Construtor
-    public Jogo(){}
-    
-    //Métodos get/set
-    public Jogador getJogador(int ind){
-        return this.jogador[ind];
-    }
-    
-    public void setJogador(Jogador jogador, int ind){
-        this.jogador[ind] = jogador;
+    // Construtor
+    public Jogo() {
+        jogadores = new ArrayList<>();
+        fakeNewsList = new ArrayList<>();
+        itemList = new ArrayList<>();
+        posicoes = new Posicao[4];
     }
 
-    public void inicializaJogador(InterfaceTerminal terminal, Setor casa[][]){
-        J[0] = new Posicao(4, 0);
-        J[1] = new Posicao(8, 4);
-        J[2] = new Posicao(4, 8);
-        J[3] = new Posicao(0, 4);
+    // Métodos get/set
+    public Jogador getJogador(int ind) {
+        return jogadores.get(ind);
+    }
+
+    public void setJogador(Jogador jogador, int ind) {
+        jogadores.set(ind, jogador);
+    }
+
+    public void inicializaJogador(InterfaceTerminal terminal, Setor[][] casa) {
+        posicoes[0] = new Posicao(4, 0);
+        posicoes[1] = new Posicao(8, 4);
+        posicoes[2] = new Posicao(4, 8);
+        posicoes[3] = new Posicao(0, 4);
 
         int numJogadores = terminal.getNumJogadores();
-        this.jogador = new Jogador[numJogadores];
-        
         for (int i = 0; i < numJogadores; i++) {
-            jogador[i] = new Jogador(J[i], "J" + (i + 1));
-            casa[J[i].getY()][J[i].getX()].setJogador(jogador[i]);
+            Jogador jogador = new Jogador(posicoes[i], "J" + (i + 1));
+            jogadores.add(jogador);
+            casa[posicoes[i].getY()][posicoes[i].getX()].setJogador(jogador);
         }
     }
 
-    public void inicializaFakeNews(Setor casa[][]) {
+    public void inicializaFakeNews(Setor[][] casa) {
         GeradorAleatorio randPosX = new GeradorAleatorio();
         GeradorAleatorio randPosY = new GeradorAleatorio();
         Posicao concatPos;
-    
+
         for (int i = 0; i < 6; i++) {
             randPosX.setAleatorio(7);
             randPosY.setAleatorio(7);
-    
+
             int linha = randPosX.getAleatorio();
             int coluna = randPosY.getAleatorio();
-    
+
             concatPos = new Posicao(linha + 1, coluna + 1);
-    
-            // Verificar se a posição está vazia (null) ou se já está ocupada por um jogador ou fakenews
-            while ((casa[concatPos.getY()][concatPos.getX()].getFakeNews() != null) || (casa[concatPos.getY()][concatPos.getX()].getJogador() != null)) {
+
+            // Verificar se a posição já está ocupada por um jogador ou fakenews
+            while (verificaCasa(casa, concatPos)) {
                 randPosX.setAleatorio(7);
                 randPosY.setAleatorio(7);
                 linha = randPosX.getAleatorio();
                 coluna = randPosY.getAleatorio();
                 concatPos = new Posicao(linha + 1, coluna + 1);
             }
-    
+
             int tipo = i % 3 + 1;
-            fn[i] = new FakeNews(concatPos, tipo, "F" + tipo);
-    
-            casa[fn[i].getPosicao().getY()][fn[i].getPosicao().getX()].setFakeNews(fn[i]);
+            FakeNews fakeNews = new FakeNews(concatPos, "F" + tipo);
+            fakeNewsList.add(fakeNews);
+
+            casa[fakeNews.getPosicao().getX()][fakeNews.getPosicao().getY()].setFakeNews(fakeNews);
         }
     }
 
-    public void inicializaSetor(Setor casa[][]){
+    public void inicializaSetor(Setor[][] casa) {
         GeradorAleatorio randPosX = new GeradorAleatorio();
         GeradorAleatorio randPosY = new GeradorAleatorio();
         Posicao concatPos;
-    
+
         for (int i = 0; i < 4; i++) {
             randPosX.setAleatorio(9);
             randPosY.setAleatorio(9);
-    
+
             int linha = randPosX.getAleatorio();
             int coluna = randPosY.getAleatorio();
-    
+
             concatPos = new Posicao(linha, coluna);
-    
-            // Verificar se a posição está vazia (null) ou se já está ocupada por um jogador ou fakenews
-            while ((casa[concatPos.getY()][concatPos.getX()].getFakeNews() != null) || (casa[concatPos.getY()][concatPos.getX()].getJogador() != null)) {
+
+            // Verificar se a posição já está ocupada por um jogador, fake news ou é restrita
+            while (verificaCasa(casa, concatPos)) {
                 randPosX.setAleatorio(9);
                 randPosY.setAleatorio(9);
                 linha = randPosX.getAleatorio();
@@ -86,29 +93,28 @@ public class Jogo {
                 concatPos = new Posicao(linha, coluna);
             }
 
-            
-            casa[concatPos.getY()][concatPos.getX()].setRestrito(true);
+            casa[concatPos.getX()][concatPos.getY()].setRestrito(true);
         }
     }
 
-    public void inicializaItem(Setor casa[][]){
+    public void inicializaItem(Setor[][] casa) {
         GeradorAleatorio randPosX = new GeradorAleatorio();
         GeradorAleatorio randPosY = new GeradorAleatorio();
         GeradorAleatorio randTipo = new GeradorAleatorio();
         Posicao concatPos;
-    
+
         for (int i = 0; i < 2; i++) {
             randPosX.setAleatorio(9);
             randPosY.setAleatorio(9);
             randTipo.setAleatorio(4);
-    
+
             int linha = randPosX.getAleatorio();
             int coluna = randPosY.getAleatorio();
-    
+
             concatPos = new Posicao(linha, coluna);
-    
-            // Verificar se a posição está vazia (null) ou se já está ocupada por um jogador ou fakenews
-            while ((casa[concatPos.getY()][concatPos.getX()].getFakeNews() != null) || (casa[concatPos.getY()][concatPos.getX()].getJogador() != null)) {
+
+            // Verificar se a posição já está ocupada por um jogador, fake news, é restrita ou possui item
+            while (verificaCasa(casa, concatPos)) {
                 randPosX.setAleatorio(9);
                 randPosY.setAleatorio(9);
                 linha = randPosX.getAleatorio();
@@ -116,24 +122,67 @@ public class Jogo {
                 concatPos = new Posicao(linha, coluna);
             }
 
-            switch(randTipo.getAleatorio()){
+            switch (randTipo.getAleatorio()) {
                 case 0:
-                    item[i] = new DenunciarFakeNewsItem(concatPos);
+                    itemList.add(new DenunciarFakeNewsItem(concatPos));
                     break;
                 case 1:
-                    item[i] = new FugirItem(concatPos);
+                    itemList.add(new FugirItem(concatPos));
                     break;
                 case 2:
-                    item[i] = new LerNoticiaRealItem(concatPos);
+                    itemList.add(new LerNoticiaRealItem(concatPos));
                     break;
                 case 3:
-                    item[i] = new OuvirBoatoItem(concatPos);
+                    itemList.add(new OuvirBoatoItem(concatPos));
                     break;
                 default:
                     break;
             }
-            casa[concatPos.getY()][concatPos.getX()].setItem(item[i]);
+            casa[concatPos.getX()][concatPos.getY()].setItem(itemList.get(i));
         }
     }
-    
+
+    public boolean verificaCasa(Setor casa[][], Posicao concatPos){
+        return (casa[concatPos.getX()][concatPos.getY()].getFakeNews() != null)
+        || (casa[concatPos.getX()][concatPos.getY()].getJogador() != null)
+        || (casa[concatPos.getX()][concatPos.getY()].getRestrito() != false)
+        || (casa[concatPos.getX()][concatPos.getY()].getItem() != null);
+    }
+
+    public void atualizaFakeNews(Tabuleiro tabuleiro, Setor[][] casa) {
+        for (FakeNews fakeNews : fakeNewsList) {
+            Posicao antigaPosicao = fakeNews.getPosicao();
+            fakeNews.movimentar();
+            Posicao novaPosicao = fakeNews.getPosicao();
+
+            //Informa o movimento de cada fakenews
+            System.out.print("\n\n");
+            System.out.println(fakeNews.getNome() + ": " + "(" + antigaPosicao.getX() + ", " + antigaPosicao.getY() + ")" + " ---> " + "(" + novaPosicao.getX() + ", " + novaPosicao.getY() + ")");
+
+            if(casa[novaPosicao.getX()][novaPosicao.getY()].getRestrito() == true){
+                casa[novaPosicao.getX()][novaPosicao.getY()].setFakeNews(null);
+                System.out.println("A Fake News " + fakeNews.getNome() + " foi eliminada por entrar em setor privado!");
+            }
+            else
+                casa[novaPosicao.getX()][novaPosicao.getY()].setFakeNews(fakeNews);
+            casa[antigaPosicao.getX()][antigaPosicao.getY()].setFakeNews(null);
+            
+            //Intervalo de 2seg entre cada movimentação de fakenews
+            try{
+                Thread.sleep(2000);
+            }
+            catch(InterruptedException e){
+                e.printStackTrace();
+            }
+
+
+            tabuleiro.desenhaTabuleiro(casa);
+        }
+    }
+
+    public void atualizarJogadores(Tabuleiro tabuleiro, Setor[][] casa, InterfaceTerminal terminal){
+        for(Jogador jogador : jogadores){
+            
+        }
+    }
 }

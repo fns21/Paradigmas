@@ -48,7 +48,7 @@ public class InterfaceTerminal {
             this.menuInicializacao(); 
     }
 
-    public void inicializaTabuleiro(Tabuleiro tabuleiro, Setor casa[][]){
-        tabuleiro.desenhaTabuleiro(casa);
+    public void informaMovimentacao(){
+        
     }
 }
