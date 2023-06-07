@@ -154,31 +154,51 @@ public class Jogo {
             Posicao antigaPosicao = fakeNews.getPosicao();
             fakeNews.movimentar();
             Posicao novaPosicao = fakeNews.getPosicao();
-
-            //Informa o movimento de cada fakenews
+    
+            // impede movimento sem deslocamento de casa
+            while (antigaPosicao == novaPosicao) {
+                antigaPosicao = fakeNews.getPosicao();
+                fakeNews.movimentar();
+                novaPosicao = fakeNews.getPosicao();
+            }
+    
+            // Informa o movimento de cada FakeNews
             System.out.print("\n\n");
             System.out.println(fakeNews.getNome() + ": " + "(" + antigaPosicao.getX() + ", " + antigaPosicao.getY() + ")" + " ---> " + "(" + novaPosicao.getX() + ", " + novaPosicao.getY() + ")");
-
-            if(casa[novaPosicao.getX()][novaPosicao.getY()].getRestrito() == true){
+    
+            if (casa[novaPosicao.getX()][novaPosicao.getY()].getRestrito()) {
                 casa[novaPosicao.getX()][novaPosicao.getY()].setFakeNews(null);
                 System.out.println("A Fake News " + fakeNews.getNome() + " foi eliminada por entrar em setor privado!");
-            }
-            else
+            } else if (casa[novaPosicao.getX()][novaPosicao.getY()].getFakeNews() != null) {
+                casa[antigaPosicao.getX()][antigaPosicao.getY()].setFakeNews(null);
+                System.out.println("A Fake News " + fakeNews.getNome() + " foi eliminada por colidir com outra FakeNews!");
+            } else if (casa[novaPosicao.getX()][novaPosicao.getY()].getJogador() != null) {
+                String jogadorNome = casa[novaPosicao.getX()][novaPosicao.getY()].getJogador().getNome();
+                casa[novaPosicao.getX()][novaPosicao.getY()].setJogador(null);
                 casa[novaPosicao.getX()][novaPosicao.getY()].setFakeNews(fakeNews);
-            casa[antigaPosicao.getX()][antigaPosicao.getY()].setFakeNews(null);
-            
-            //Intervalo de 2seg entre cada movimentação de fakenews
-            try{
-                Thread.sleep(2000);
+                System.out.println("O Jogador  " + jogadorNome + " foi eliminado pela FakeNews " + fakeNews.getNome() + "!");
+            } else {
+                casa[novaPosicao.getX()][novaPosicao.getY()].setFakeNews(fakeNews);
             }
-            catch(InterruptedException e){
+            
+            casa[antigaPosicao.getX()][antigaPosicao.getY()].setFakeNews(null);
+    
+            // Intervalo de 2 segundos entre cada movimentação de FakeNews
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+    
+            // Remove a FakeNews da lista se ela foi eliminada do tabuleiro
+            if (casa[novaPosicao.getX()][novaPosicao.getY()].getFakeNews() == null) {
+                fakeNewsList.remove(fakeNews);
+            }
 
             tabuleiro.desenhaTabuleiro(casa);
         }
     }
+    
 
     public void atualizarJogadores(Tabuleiro tabuleiro, Setor[][] casa, InterfaceTerminal terminal){
         for(Jogador jogador : jogadores){

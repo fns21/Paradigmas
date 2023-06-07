@@ -13,5 +13,10 @@ public class Principal {
         jogo.inicializaItem(casa);
         tabuleiro.desenhaTabuleiro(casa);
         jogo.atualizaFakeNews(tabuleiro, casa);
+        System.out.println(Cores.ANSI_WHITE + "+----+----+----+----+----+----+----+----+----+" + Cores.ANSI_RESET);
+        jogo.atualizaFakeNews(tabuleiro, casa);
+        System.out.println(Cores.ANSI_WHITE + "+----+----+----+----+----+----+----+----+----+" + Cores.ANSI_RESET);
+        jogo.atualizaFakeNews(tabuleiro, casa);
+
     }
 }
